@@ -58,17 +58,17 @@ class Flathub extends Controller
 
         @buildLimit = 100
         @changeLimit = 100
-        @dataAccessor = dataService.open().closeOnDestroy(@$scope)
+        @data = dataService.open().closeOnDestroy(@$scope)
         @_infoIsExpanded = {}
-        @$scope.all_builders = @all_builders = @dataAccessor.getBuilders()
+        @$scope.all_builders = @all_builders = @data.getBuilders()
         @$scope.builders = @builders = []
-        @$scope.builds = @builds = @dataAccessor.getBuilds
+        @$scope.builds = @builds = @data.getBuilds
             property: ["got_revision"]
             limit: @buildLimit
             order: '-started_at'
-        @changes = @dataAccessor.getChanges({limit: @changeLimit, order: '-changeid'})
-        @buildrequests = @dataAccessor.getBuildrequests({limit: @buildLimit, order: '-submitted_at'})
-        @buildsets = @dataAccessor.getBuildsets({limit: @buildLimit, order: '-submitted_at'})
+        @changes = @data.getChanges({limit: @changeLimit, order: '-changeid'})
+        @buildrequests = @data.getBuildrequests({limit: @buildLimit, order: '-submitted_at'})
+        @buildsets = @data.getBuildsets({limit: @buildLimit, order: '-submitted_at'})
 
         @builds.onChange = @changes.onChange = @buildrequests.onChange = @buildsets.onChange = @onChange
 
