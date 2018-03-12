@@ -27,6 +27,7 @@ class State extends Config
         cfg =
             group: name
             caption: 'Flathub View'
+            builderid: 2
 
         # Register new state
         state =
@@ -51,10 +52,12 @@ class State extends Config
 
 class Flathub extends Controller
     constructor: (@$scope, $q, @$window, dataService, bbSettingsService, resultsService,
-        @$uibModal, @$timeout) ->
+        @$uibModal, @$timeout, $state) ->
         angular.extend this, resultsService
         settings = bbSettingsService.getSettingsGroup('Flathub')
         @testSetting = settings.testSetting.value
+
+        @builderid=$state.current.data.builderid
 
         @buildLimit = 100
         @changeLimit = 100
