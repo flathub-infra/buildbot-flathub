@@ -51,40 +51,24 @@ class State extends Config
             ]
 
 class Flathub extends Controller
-    constructor: (@$scope, $q, @$window, dataService, bbSettingsService, resultsService,
-        @$uibModal, @$timeout, $state) ->
+    constructor: ($scope, $q, @$window, dataService, bbSettingsService, resultsService,
+        @$uibModal, @$timeout, $state, $stateParams) ->
         angular.extend this, resultsService
         settings = bbSettingsService.getSettingsGroup('Flathub')
         @testSetting = settings.testSetting.value
 
-        @builderid=$state.current.data.builderid
+        builderid=$state.current.data.builderid
 
-        @buildLimit = 100
-        @changeLimit = 100
-        @data = dataService.open().closeOnDestroy(@$scope)
-        @_infoIsExpanded = {}
-        @$scope.all_builders = @all_builders = @data.getBuilders()
-        @$scope.builders = @builders = []
-        @$scope.builds = @builds = @data.getBuilds
-            property: ["got_revision"]
-            limit: @buildLimit
-            order: '-started_at'
-        @changes = @data.getChanges({limit: @changeLimit, order: '-changeid'})
-        @buildrequests = @data.getBuildrequests({limit: @buildLimit, order: '-submitted_at'})
-        @buildsets = @data.getBuildsets({limit: @buildLimit, order: '-submitted_at'})
+        data = dataService.open().closeOnDestroy($scope)
 
-        @builds.onChange = @changes.onChange = @buildrequests.onChange = @buildsets.onChange = @onChange
-
-    onChange: (s) =>
-        # if there is no data, no need to try and build something.
-        if @builds.length == 0 or @all_builders.length == 0 or not @changes.$resolved or
-                @buildsets.length == 0 or @buildrequests == 0
-            return
-        if not @onchange_debounce?
-            @onchange_debounce = @$timeout(@_onChange, 100)
-
-    _onChange: =>
-        @onchange_debounce = undefined
-        # we only display builders who actually have builds
-        for build in @builds
-            @all_builders.get(build.builderid).hasBuild = true
+        data.getBuilders(builderid).onNew = (builder) ->
+            $scope.numbuilds = 200
+            if $stateParams.numbuilds?
+                $scope.numbuilds = +$stateParams.numbuilds
+            $scope.builds = builder.getBuilds
+                property: ["owner", "workername"]
+                limit: $scope.numbuilds
+                order: '-number'
+            $scope.buildrequests = builder.getBuildrequests(claimed:false)
+            # $scope.builds.onChange=refreshContextMenu
+            # $scope.buildrequests.onChange=refreshContextMenu
