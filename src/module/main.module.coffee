@@ -19,26 +19,23 @@ class State extends Config
         # Menu configuration
         glMenuServiceProvider.addGroup
             name: name
-            caption: 'Flathub View'
-            icon: 'coffee'
-            order: 5
+            caption: 'Flathub'
+            icon: 'cubes'
+            order: 0
 
         # Configuration
         cfg =
             group: name
-            caption: 'Flathub View'
+            caption: 'Flathub'
             builderid: 2
 
-        # Register new state
-        state =
+        $stateProvider.state
             controller: "#{name}Controller"
             controllerAs: "c"
             templateUrl: "flathub_view/views/#{name}.html"
             name: name
-            url: "/#{name}"
+            url: "/?numbuilds"
             data: cfg
-
-        $stateProvider.state(state)
 
         bbSettingsServiceProvider.addSettingsGroup
             name: 'Flathub'
@@ -66,7 +63,7 @@ class Flathub extends Controller
             if $stateParams.numbuilds?
                 $scope.numbuilds = +$stateParams.numbuilds
             $scope.builds = builder.getBuilds
-                property: ["owner", "workername"]
+                property: ["owners", "workername", "flathub-arches", "flathub-build-id", "flathub-official-build", "repository"]
                 limit: $scope.numbuilds
                 order: '-number'
             $scope.buildrequests = builder.getBuildrequests(claimed:false)

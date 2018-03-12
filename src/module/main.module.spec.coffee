@@ -33,5 +33,5 @@ describe 'Flathub view', ->
         expect(state.controller).toBe("#{name}Controller")
         expect(state.controllerAs).toBe('c')
         expect(state.templateUrl).toBe("flathub_view/views/#{name}.html")
-        expect(state.url).toBe("/#{name}")
+        expect(state.url).toBe("/?numbuilds")
 
