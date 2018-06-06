@@ -32,6 +32,7 @@
       tr
         td(width='80px') #
         td(width='150px') App
+        td(width='40px') Repo
         td(width='150px') Build Type
         td(width='150px') Arches
         td(width='150px') Started At
@@ -46,8 +47,11 @@
                     | {{build.number}}
                   span.badge-active {{c.results2text(build)}}
           td
-            a(href="{{build.properties['repository'][0]}}")
+            a(ui-sref="build({builder:build.builderid, build:build.number})")
               | {{  build.properties['flathub-build-id'][0].replace('@', "/")}}
+          td
+            a(href="{{build.properties['repository'][0]}}")
+              | ⇗
           td
             span
               | {{  build.properties['flathub-official-build'][0] ? "Official" : "Test" }}
